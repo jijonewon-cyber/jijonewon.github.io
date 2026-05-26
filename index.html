@@ -34,6 +34,7 @@
           <li><a href="#festivals" data-translate-key="nav_festivals">지역축제</a></li>
           <li><a href="#bus-schedule" data-translate-key="nav_bus">버스시간표</a></li>
           <li><a href="#faq" data-translate-key="nav_faq">여행정보</a></li>
+          <li><a href="#contact-section" data-translate-key="nav_contact">문의하기</a></li>
         </ul>
       </nav>
 
@@ -64,6 +65,7 @@
         <li><a href="#festivals" data-translate-key="nav_festivals" onclick="toggleMobileMenu()">지역축제</a></li>
         <li><a href="#bus-schedule" data-translate-key="nav_bus" onclick="toggleMobileMenu()">버스시간표</a></li>
         <li><a href="#faq" data-translate-key="nav_faq" onclick="toggleMobileMenu()">여행정보</a></li>
+        <li><a href="#contact-section" data-translate-key="nav_contact" onclick="toggleMobileMenu()">문의하기</a></li>
       </ul>
       <div class="mobile-lang-selector">
         <button id="mobile-lang-ko" class="lang-btn active" onclick="setLanguage('ko'); toggleMobileMenu()">한국어</button>
@@ -1199,6 +1201,49 @@
     </div>
   </div>
 
+  <!-- Contact Us Section (EmailJS 연동 문의하기) -->
+  <section id="contact-section" class="section-padding">
+    <div class="container">
+      <div class="section-header text-center">
+        <span class="section-badge" data-translate-key="badge_contact">Contact Us</span>
+        <h2 class="section-title" data-translate-key="contact_title">관광안내 문의하기</h2>
+        <p class="section-description" data-translate-key="contact_desc">
+          양구 관광에 대해 궁금한 점이 있으시면 문의를 보내주세요. 기재하신 이메일로 답변해 드립니다.
+        </p>
+      </div>
+
+      <div class="contact-card">
+        <form id="contact-form" onsubmit="sendContactEmail(event)">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="contact-name"><span data-translate-key="label_c_name">성함</span> <span class="required">*</span></label>
+              <input type="text" id="contact-name" class="form-control" placeholder="홍길동" required>
+            </div>
+            <div class="form-group">
+              <label for="contact-email"><span data-translate-key="label_c_email">답변받을 이메일 주소</span> <span class="required">*</span></label>
+              <input type="email" id="contact-email" class="form-control" placeholder="example@email.com" required>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="contact-subject"><span data-translate-key="label_c_subject">문의 제목</span> <span class="required">*</span></label>
+            <input type="text" id="contact-subject" class="form-control" placeholder="두타연 출입 신청 문의" required>
+          </div>
+
+          <div class="form-group">
+            <label for="contact-message"><span data-translate-key="label_c_message">문의 내용</span> <span class="required">*</span></label>
+            <textarea id="contact-message" class="form-control" rows="5" placeholder="상세 문의 내용을 작성해 주세요." required></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block submit-btn" id="contact-submit-btn">
+            <span id="submit-btn-text" data-translate-key="btn_send_email">문의 메일 보내기</span>
+            <span id="submit-btn-spinner" class="spinner hidden"><i class="fa-solid fa-circle-notch fa-spin"></i></span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
   <!-- Footer Section -->
   <footer>
     <div class="container footer-content">
@@ -1245,6 +1290,16 @@
       </div>
     </div>
   </footer>
+
+  <!-- EmailJS SDK -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script type="text/javascript">
+     (function(){
+        emailjs.init({
+          publicKey: "r2UTxOyQZ7xrzMX6_",
+        });
+     })();
+  </script>
 
   <!-- Custom JavaScript -->
   <script src="script.js"></script>

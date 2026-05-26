@@ -243,7 +243,18 @@ const translations = {
     th_dept_terminal: "터미널 출발",
     th_dept_back: "종점 회차",
     bus_route_haean: "양구 터미널 ↔ 해안면 (펀치볼 방면)",
-    bus_note_haean: "※ 통일관, 을지전망대 매표소 인근 하차"
+    bus_note_haean: "※ 통일관, 을지전망대 매표소 인근 하차",
+
+    // Contact Form
+    nav_contact: "문의하기",
+    badge_contact: "Contact Us",
+    contact_title: "관광안내 문의하기",
+    contact_desc: "양구 관광에 대해 궁금한 점이 있으시면 문의를 보내주세요. 기재하신 이메일로 답변해 드립니다.",
+    label_c_name: "성함",
+    label_c_email: "답변받을 이메일 주소",
+    label_c_subject: "문의 제목",
+    label_c_message: "문의 내용",
+    btn_send_email: "문의 메일 보내기"
   },
   en: {
     // Header
@@ -484,7 +495,18 @@ const translations = {
     th_dept_terminal: "From Terminal",
     th_dept_back: "Return Depart",
     bus_route_haean: "Yanggu Terminal ↔ Haean-myeon (for Punchbowl)",
-    bus_note_haean: "※ Drops off near Unification Hall & Eulji Observatory box office."
+    bus_note_haean: "※ Drops off near Unification Hall & Eulji Observatory box office.",
+
+    // Contact Form
+    nav_contact: "Contact Us",
+    badge_contact: "Contact Us",
+    contact_title: "Inquire About Yanggu Tour",
+    contact_desc: "If you have any questions about touring Yanggu, please send an inquiry. We will respond to your email.",
+    label_c_name: "Full Name",
+    label_c_email: "Your Email Address",
+    label_c_subject: "Subject",
+    label_c_message: "Message",
+    btn_send_email: "Send Inquiry Email"
   }
 };
 
@@ -1312,4 +1334,64 @@ function filterIntercity(city) {
     if (seoulGrid) seoulGrid.classList.add('hidden');
     if (chuncheonGrid) chuncheonGrid.classList.remove('hidden');
   }
+}
+
+// ==========================================================================
+// EmailJS Contact Form Integration
+// ==========================================================================
+
+function sendContactEmail(event) {
+  event.preventDefault();
+
+  const nameVal = document.getElementById('contact-name').value.trim();
+  const emailVal = document.getElementById('contact-email').value.trim();
+  const subjectVal = document.getElementById('contact-subject').value.trim();
+  const messageVal = document.getElementById('contact-message').value.trim();
+
+  // Validate values
+  if (!nameVal || !emailVal || !subjectVal || !messageVal) {
+    alert(currentLang === 'ko' ? "모든 필수 필드를 입력해주세요." : "Please fill in all required fields.");
+    return;
+  }
+
+  // Spinner toggles
+  const submitBtn = document.getElementById('contact-submit-btn');
+  const btnText = document.getElementById('submit-btn-text');
+  const btnSpinner = document.getElementById('submit-btn-spinner');
+
+  if (submitBtn) submitBtn.disabled = true;
+  if (btnText) btnText.classList.add('hidden');
+  if (btnSpinner) btnSpinner.classList.remove('hidden');
+
+  // Prepare parameters matching EmailJS template keys
+  const templateParams = {
+    title: subjectVal,
+    name: nameVal,
+    email: emailVal,
+    time: new Date().toLocaleString(currentLang === 'ko' ? 'ko-KR' : 'en-US'),
+    message: messageVal
+  };
+
+  // Send via EmailJS
+  emailjs.send('service_7xb8mcs', 'template_uy8lh3g', templateParams)
+    .then(function(response) {
+       console.log('SUCCESS!', response.status, response.text);
+       alert(currentLang === 'ko' 
+         ? "성공적으로 문의 이메일을 보냈습니다. 기재하신 메일로 빠른 시일 내에 연락해 드리겠습니다." 
+         : "Your inquiry has been sent successfully. We will reply to your email as soon as possible.");
+       
+       // Reset form
+       document.getElementById('contact-form').reset();
+    }, function(error) {
+       console.log('FAILED...', error);
+       alert(currentLang === 'ko' 
+         ? "이메일 전송에 실패하였습니다. 다시 시도해 주세요. 에러: " + JSON.stringify(error)
+         : "Failed to send email. Please try again. Error: " + JSON.stringify(error));
+    })
+    .finally(function() {
+       // Restore spinner toggles
+       if (submitBtn) submitBtn.disabled = false;
+       if (btnText) btnText.classList.remove('hidden');
+       if (btnSpinner) btnSpinner.classList.add('hidden');
+    });
 }
