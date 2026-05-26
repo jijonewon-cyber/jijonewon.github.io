@@ -39,8 +39,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const pdfWorkspace = document.getElementById("pdf-workspace");
     const btnModeMerge = document.getElementById("btn-mode-merge");
     const btnModeSplit = document.getElementById("btn-mode-split");
+    const btnModeRotate = document.getElementById("btn-mode-rotate");
     const pdfMergeContainer = document.getElementById("pdf-merge-container");
     const pdfSplitContainer = document.getElementById("pdf-split-container");
+    const pdfRotateContainer = document.getElementById("pdf-rotate-container");
+    const rotateFileSelect = document.getElementById("rotate-file-select");
+    const rotatePageRange = document.getElementById("rotate-page-range");
+    const btnRunRotate = document.getElementById("btn-run-rotate");
     const pdfMergeList = document.getElementById("pdf-merge-list");
     const pdfSplitFilename = document.getElementById("pdf-split-filename");
     const pdfSplitPagecount = document.getElementById("pdf-split-pagecount");
@@ -78,8 +83,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Tab 2 state
     let pdfQueue = []; // { id, name, size, buffer, pageCount }
-    let pdfToolMode = "merge"; // "merge" or "split"
+    let pdfToolMode = "merge"; // "merge", "split", or "rotate"
     let selectedSplitFile = null;
+    let selectedRotateDeg = 90;
 
     // Tab 3 state
     let imageQueue = []; // { id, name, dataURL }
@@ -979,6 +985,11 @@ document.addEventListener("DOMContentLoaded", () => {
             fItem.appendChild(actions);
             pdfMergeList.appendChild(fItem);
         });
+
+        // Sync rotate file dropdown
+        rotateFileSelect.innerHTML = pdfQueue.length === 0
+            ? '<option value="">-- 파일을 먼저 위에서 업로드하세요 --</option>'
+            : pdfQueue.map((item, i) => `<option value="${i}">${item.name} (${item.pageCount}p)</option>`).join("");
     }
 
     function selectFileForSplit(pdfItem) {
@@ -1005,19 +1016,58 @@ document.addEventListener("DOMContentLoaded", () => {
 
     btnModeSplit.addEventListener("click", () => {
         pdfToolMode = "split";
-        btnModeSplit.classList.add("active");
+        [btnModeMerge, btnModeSplit, btnModeRotate].forEach(b => {
+            b.classList.remove("active", "btn-primary");
+            b.classList.add("btn-secondary");
+        });
+        btnModeSplit.classList.add("active", "btn-primary");
         btnModeSplit.classList.remove("btn-secondary");
-        btnModeSplit.classList.add("btn-primary");
-        
-        btnModeMerge.classList.remove("active");
-        btnModeMerge.classList.add("btn-secondary");
-        btnModeMerge.classList.remove("btn-primary");
-        
         pdfMergeContainer.style.display = "none";
         pdfSplitContainer.style.display = "block";
+        pdfRotateContainer.style.display = "none";
+    });
+
+    btnModeRotate.addEventListener("click", () => {
+        pdfToolMode = "rotate";
+        [btnModeMerge, btnModeSplit, btnModeRotate].forEach(b => {
+            b.classList.remove("active", "btn-primary");
+            b.classList.add("btn-secondary");
+        });
+        btnModeRotate.classList.add("active", "btn-primary");
+        btnModeRotate.classList.remove("btn-secondary");
+        pdfMergeContainer.style.display = "none";
+        pdfSplitContainer.style.display = "none";
+        pdfRotateContainer.style.display = "block";
+    });
+
+    // Rotate degree selection
+    document.querySelectorAll(".rotate-deg-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            document.querySelectorAll(".rotate-deg-btn").forEach(b => {
+                b.classList.remove("active", "btn-primary");
+                b.classList.add("btn-secondary");
+            });
+            btn.classList.add("active", "btn-primary");
+            btn.classList.remove("btn-secondary");
+            selectedRotateDeg = parseInt(btn.getAttribute("data-deg"));
+        });
     });
 
     // Merge Action
+    btnModeMerge.addEventListener("click", () => {
+        pdfToolMode = "merge";
+        [btnModeMerge, btnModeSplit, btnModeRotate].forEach(b => {
+            b.classList.remove("active", "btn-primary");
+            b.classList.add("btn-secondary");
+        });
+        btnModeMerge.classList.add("active", "btn-primary");
+        btnModeMerge.classList.remove("btn-secondary");
+        pdfMergeContainer.style.display = "block";
+        pdfSplitContainer.style.display = "none";
+        pdfRotateContainer.style.display = "none";
+    });
+
+    // Merge Run Action
     btnRunMerge.addEventListener("click", async () => {
         if (pdfQueue.length < 2) {
             alert("병합할 PDF 파일을 최소 2개 이상 등록해 주세요.");
@@ -1045,6 +1095,7 @@ document.addEventListener("DOMContentLoaded", () => {
             btnRunMerge.textContent = "PDF 병합하여 다운로드";
         }
     });
+
 
     // Split Action
     btnRunSplit.addEventListener("click", async () => {
@@ -1121,6 +1172,56 @@ document.addEventListener("DOMContentLoaded", () => {
         link.click();
         document.body.removeChild(link);
     }
+
+    // Rotate Action
+    btnRunRotate.addEventListener("click", async () => {
+        const fileIndex = parseInt(rotateFileSelect.value);
+        if (isNaN(fileIndex) || !pdfQueue[fileIndex]) {
+            alert("회전할 PDF 파일을 선택해 주세요.");
+            return;
+        }
+
+        const selectedFile = pdfQueue[fileIndex];
+        const rangeText = rotatePageRange.value.trim();
+        const degrees = selectedRotateDeg;
+
+        btnRunRotate.disabled = true;
+        btnRunRotate.textContent = "PDF 회전 처리 중...";
+
+        try {
+            const pdfDoc = await PDFLib.PDFDocument.load(selectedFile.buffer);
+            const pageCount = pdfDoc.getPageCount();
+
+            let pageIndices;
+            if (!rangeText) {
+                pageIndices = Array.from({ length: pageCount }, (_, i) => i);
+            } else {
+                pageIndices = parsePageRange(rangeText, pageCount);
+                if (pageIndices.length === 0) {
+                    alert("올바른 페이지 범위를 입력해 주세요.");
+                    btnRunRotate.disabled = false;
+                    btnRunRotate.textContent = "🔄 회전하여 PDF 다운로드";
+                    return;
+                }
+            }
+
+            for (const idx of pageIndices) {
+                const page = pdfDoc.getPage(idx);
+                const currentRotation = page.getRotation().angle;
+                page.setRotation(PDFLib.degrees((currentRotation + degrees) % 360));
+            }
+
+            const rotatedBytes = await pdfDoc.save();
+            const blob = new Blob([rotatedBytes], { type: 'application/pdf' });
+            const baseName = selectedFile.name.replace(/\.pdf$/i, "");
+            triggerDownload(blob, `${baseName}_rotated.pdf`);
+        } catch (err) {
+            alert(`PDF 회전 오류: ${err.message}`);
+        } finally {
+            btnRunRotate.disabled = false;
+            btnRunRotate.textContent = "🔄 회전하여 PDF 다운로드";
+        }
+    });
 
     // -------------------------------------------------------------
     // Module 3: Image to PDF (PNG / JPG ➔ PDF)

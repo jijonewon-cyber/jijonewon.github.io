@@ -92,7 +92,9 @@ body {
     z-index: 1;
 }
 
+
 /* Header */
+
 .app-header {
     display: flex;
     justify-content: space-between;
