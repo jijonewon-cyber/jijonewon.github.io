@@ -9,6 +9,7 @@ const translations = {
     logo_text: "양구올구양",
     nav_attractions: "양구 9경",
     nav_map: "관광지도",
+    nav_gomchwi: "양구 곰취",
     nav_booking: "투어예약",
     nav_festivals: "지역축제",
     nav_faq: "여행정보",
@@ -174,13 +175,51 @@ const translations = {
     f_c_tel: "대표안내:",
     f_c_address: "주소:",
     f_c_hours: "평일:",
-    footer_disclaimer: "본 웹페이지는 외국인 및 외부 관광객 유치를 위한 홍보 시뮬레이션 플랫폼입니다."
+    footer_disclaimer: "본 웹페이지는 외국인 및 외부 관광객 유치를 위한 홍보 시뮬레이션 플랫폼입니다.",
+    
+    // Specialty Section (Gomchwi)
+    badge_specialty: "양구 특산물",
+    gomchwi_section_title: "산나물의 제왕, 양구 명품 곰취",
+    gomchwi_harvest_badge: "제철 수확: 4월 ~ 5월",
+    gomchwi_timeline_title: "곰취 생태 캘린더 (Seasonal Calendar)",
+    gomchwi_time1_m: "4월 초 (April)",
+    gomchwi_time1_d: "첫 싹과 수확 시작",
+    gomchwi_time2_m: "5월 초 (May)",
+    gomchwi_time2_d: "양구 곰취 축제 & 최고 풍미",
+    gomchwi_time3_m: "6월~8월 (Summer)",
+    gomchwi_time3_d: "장아찌 가공 및 저장 공급",
+    gomchwi_tab_story: "곰취 이야기",
+    gomchwi_tab_benefits: "영양 및 효능",
+    gomchwi_tab_recipes: "대표 레시피",
+    gomchwi_story_h: "대암산 맑은 바람이 키워낸 신비의 산나물",
+    gomchwi_story_p1: "곰이 겨울잠에서 깬 직후 몸속 독소를 제거하고 원기를 보충하기 위해 가장 먼저 찾아 먹는다고 해서 '곰취'라는 이름이 유래되었습니다. 양구 곰취는 해발 1,000m가 넘는 대암산 자락의 청정 고산지대에서 재배되어 그 향이 다른 지역보다 월등히 깊습니다.",
+    gomchwi_story_p2: "일교차가 심하고 서늘한 양구 해안면(펀치볼) 일대의 토양에서 자란 곰취는 잎이 매우 연하고 부드러우며 특유의 쌉싸래한 첫맛과 목 넘김 끝에 감도는 달콤함이 특징입니다.",
+    gomchwi_benefits_h: "몸속 활력을 깨우는 웰빙 천연 약초",
+    gomchwi_benefit1_title: "비타민 A & C (항산화, 피로 개선)",
+    gomchwi_benefit2_title: "베타카로틴 (항암, 노화 방지)",
+    gomchwi_benefit3_title: "칼륨 & 식이섬유 (혈압조절, 체내 해독)",
+    gomchwi_benefits_note: "※ 양구 곰취는 단백질, 칼슘 등도 다량 함유되어 있어 봄철 춘곤증 예방과 환절기 면역 증진에 아주 훌륭한 산채입니다.",
+    gomchwi_recipes_h: "전통과 현대를 아우르는 향긋한 미식",
+    recipe1_title: "곰취 쌈밥",
+    recipe1_desc: "살짝 데친 연한 곰취 잎에 양념 쌈장과 밥을 올려 싸 먹는 대표적인 웰빙 미식",
+    recipe2_title: "곰취 장아찌",
+    recipe2_desc: "간장 양념에 절여 사계절 내내 특유의 은은한 향을 고기 요리와 함께 즐기는 일품 반찬",
+    recipe3_title: "곰취 브레드 / 만두",
+    recipe3_desc: "말린 곰취 분말을 반죽에 넣어 구운 곰취 소금빵, 찐빵, 만두 등 이색 디저트",
+    quiz_title: "<i class=\"fa-solid fa-utensils\"></i> 나에게 딱 맞는 곰취 미식 매칭",
+    quiz_desc: "평소 좋아하는 식습관이나 선호도를 선택해 보세요. 최고의 양구 곰취 요리를 추천해 드립니다!",
+    quiz_opt_meat: "고기매니아 스타일",
+    quiz_opt_healthy: "청정 건강식 스타일",
+    quiz_opt_sweet: "디저트/분식 스타일",
+    quiz_result_badge: "추천 메뉴 (RECOMMENDED MENU)",
+    quiz_pairing_label: "추천 곁들임:"
   },
   en: {
     // Header
     logo_text: "Yanggu Olgu-yang",
     nav_attractions: "9 Views",
     nav_map: "Interactive Map",
+    nav_gomchwi: "Yanggu Gomchwi",
     nav_booking: "Book Tour",
     nav_festivals: "Festivals",
     nav_faq: "Guide Info",
@@ -346,7 +385,44 @@ const translations = {
     f_c_tel: "Tourism Dept:",
     f_c_address: "Address:",
     f_c_hours: "Office Hours:",
-    footer_disclaimer: "This webpage is a simulated tourism platform built for promotional and demonstration purposes."
+    footer_disclaimer: "This webpage is a simulated tourism platform built for promotional and demonstration purposes.",
+    
+    // Specialty Section (Gomchwi)
+    badge_specialty: "Yanggu Specialty",
+    gomchwi_section_title: "King of Wild Herbs: Premium Yanggu Gomchwi",
+    gomchwi_harvest_badge: "Harvest Season: April - May",
+    gomchwi_timeline_title: "Gomchwi Seasonal Calendar",
+    gomchwi_time1_m: "Early April",
+    gomchwi_time1_d: "Sprouting & Harvest Begins",
+    gomchwi_time2_m: "Early May",
+    gomchwi_time2_d: "Gomchwi Festival & Peak Flavor",
+    gomchwi_time3_m: "June - August",
+    gomchwi_time3_d: "Pickling Process & Dried Storage",
+    gomchwi_tab_story: "The Story",
+    gomchwi_tab_benefits: "Health Benefits",
+    gomchwi_tab_recipes: "Top Recipes",
+    gomchwi_story_h: "Mysterious Herb Raised by Mt. Daeamsan's Pure Wind",
+    gomchwi_story_p1: "Gomchwi (bear-parsley) gets its name because bears waking from hibernation eat it first to detoxify and regain energy. Yanggu Gomchwi is grown at the clean foothills of Mt. Daeamsan (above 1,000m altitude), offering a far deeper fragrance than other regions.",
+    gomchwi_story_p2: "Cultivated in the cool, temperature-fluctuating soils of Haean-myeon (Punchbowl), its leaves are extremely tender and thin. It features a uniquely pleasant bitter initial taste and a lingering sweet finish.",
+    gomchwi_benefits_h: "A Wellness Natural Herb to Awake Body Energy",
+    gomchwi_benefit1_title: "Vitamins A & C (Antioxidant, Fatigue Relief)",
+    gomchwi_benefit2_title: "Beta-Carotene (Anticancer, Anti-aging)",
+    gomchwi_benefit3_title: "Potassium & Fiber (Blood Pressure, Detox)",
+    gomchwi_benefits_note: "※ Yanggu Gomchwi also contains plenty of protein and calcium, making it excellent for preventing spring drowsiness and boosting seasonal immunity.",
+    gomchwi_recipes_h: "Fragrant Gourmet Bridging Tradition & Trend",
+    recipe1_title: "Gomchwi Rice Wrap (Ssam-bap)",
+    recipe1_desc: "A signature health food made by wrapping rice and seasoned soybean paste in lightly blanched tender Gomchwi leaves.",
+    recipe2_title: "Pickled Gomchwi (Jangajji)",
+    recipe2_desc: "A premium side dish pickled in soy sauce syrup, enjoyed year-round for its deep herbal scent that pairs perfectly with BBQ meats.",
+    recipe3_title: "Gomchwi Bakery / Dumplings",
+    recipe3_desc: "Trendy local treats like Gomchwi salt bread, steamed buns, and dumplings baked with dried bear-parsley powder.",
+    quiz_title: "<i class=\"fa-solid fa-utensils\"></i> Find My Gomchwi Gourmet Match",
+    quiz_desc: "Choose your preferred dining style below, and we will recommend the perfect Yanggu Gomchwi dish for you!",
+    quiz_opt_meat: "Meat Enthusiast",
+    quiz_opt_healthy: "Pure Healthy Eater",
+    quiz_opt_sweet: "Dessert & Snack Lover",
+    quiz_result_badge: "RECOMMENDED MENU",
+    quiz_pairing_label: "Best Pairing:"
   }
 };
 
@@ -699,6 +775,7 @@ function setLanguage(lang) {
 
   // Sync placeholders & values in dynamic panels
   updateActiveDetailLanguage();
+  updateGomchwiQuizResultDisplay();
   
   localStorage.setItem('ygtour_lang', lang);
 }
@@ -1021,4 +1098,115 @@ function printTicket() {
     : `--------------------------------------\n   YANGGU TOURISM BOARDING PASS\n--------------------------------------\nPass ID: ${num}\nPassenger: ${name}\nCourse: ${course}\nTour Date: ${date}\n--------------------------------------\nPresent this voucher/printout at the departure desk.`;
   
   alert(printMsg);
+}
+
+// ==========================================================================
+// Gomchwi Interactive Showcase Section (Tabs & Gourmet Quiz)
+// ==========================================================================
+
+let currentGomchwiPreference = null;
+
+const gomchwiQuizData = {
+  meat: {
+    title: {
+      ko: "곰취 삼겹살 쌈 & 곰취 장아찌",
+      en: "Gomchwi Pork Belly Ssam & Pickles"
+    },
+    desc: {
+      ko: "쌉싸래한 곰취 잎이 노릇하게 구워진 삼겹살의 느끼한 맛을 깔끔하게 잡아주고 특유의 솔향을 한입 가득 퍼지게 합니다. 새콤달콤한 곰취 장아찌를 고기에 싸 먹는 것도 최고의 별미입니다.",
+      en: "The bitter-sweet herbal leaves perfectly balance the grease of grilled pork belly, exploding with fresh pine aromas. Wrapping the grilled meat in pickled Gomchwi is a legendary culinary pairing."
+    },
+    pairing: {
+      ko: "시원한 양구 곰취 생막걸리",
+      en: "Chilled Yanggu Gomchwi Rice Wine (Makgeolli)"
+    }
+  },
+  healthy: {
+    title: {
+      ko: "곰취 강된장 쌈밥 & 곰취 나물밥",
+      en: "Gomchwi Soybean Paste Ssam-bap & Seasoned Rice"
+    },
+    desc: {
+      ko: "살짝 데친 부드러운 곰취 잎에 짭조름하고 구수한 강된장과 보리밥을 곁들인 쌈밥, 그리고 참기름에 고소하게 볶아 갓 지은 나물밥은 맛과 영양이 풍부한 웰빙 건강식입니다.",
+      en: "A healthy classic wrapping barley rice and savory, thick soybean paste inside blanched soft Gomchwi leaves. The seasoned rice mixed with toasted sesame oil is a nutrient-rich, clean-eating delicacy."
+    },
+    pairing: {
+      ko: "구수한 대암산 둥굴레차",
+      en: "Warm Mt. Daeamsan Solomon's Seal Tea"
+    }
+  },
+  sweet: {
+    title: {
+      ko: "양구 곰취 소금빵 & 곰취 찐빵",
+      en: "Yanggu Gomchwi Salt Bread & Steamed Buns"
+    },
+    desc: {
+      ko: "말린 양구 곰취 분말을 반죽에 믹스하여 구워낸 이색 소금빵과 단팥 소가 들어간 초록빛 찐빵입니다. 은은한 향과 고소한 버터의 맛이 어우러져 젊은 세대와 빵 매니아들에게 큰 인기를 끌고 있습니다.",
+      en: "A trendy local bakery item blending dried Gomchwi powder directly into salt bread dough, and green-colored steamed buns stuffed with sweet red bean paste. The subtle herbal aroma matches beautifully with buttery pastries."
+    },
+    pairing: {
+      ko: "아이스 곰취 라떼 또는 아메리카노",
+      en: "Iced Gomchwi Latte or Cold Brew Coffee"
+    }
+  }
+};
+
+function switchGomchwiTab(tabName) {
+  // Toggle active styling on buttons
+  document.querySelectorAll('.spec-tab-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  const activeBtn = document.getElementById(`spec-tab-${tabName}`);
+  if (activeBtn) activeBtn.classList.add('active');
+
+  // Toggle visible content pane
+  document.querySelectorAll('.spec-tab-content').forEach(pane => {
+    pane.classList.add('hidden');
+  });
+  const activePane = document.getElementById(`spec-content-${tabName}`);
+  if (activePane) activePane.classList.remove('hidden');
+}
+
+function recommendGomchwiFood(preference) {
+  currentGomchwiPreference = preference;
+  
+  // Highlight active button
+  document.querySelectorAll('.quiz-opt-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  const activeBtn = document.getElementById(`quiz-opt-${preference}`);
+  if (activeBtn) {
+    activeBtn.classList.add('active');
+  }
+
+  const resultCard = document.getElementById('gomchwi-quiz-result');
+  if (resultCard) {
+    resultCard.classList.remove('hidden');
+    resultCard.style.opacity = '0';
+    resultCard.style.transform = 'translateY(10px)';
+    
+    // Quick fade in animation trigger
+    setTimeout(() => {
+      resultCard.style.transition = 'all 0.4s ease';
+      resultCard.style.opacity = '1';
+      resultCard.style.transform = 'translateY(0)';
+    }, 50);
+  }
+
+  updateGomchwiQuizResultDisplay();
+}
+
+function updateGomchwiQuizResultDisplay() {
+  if (!currentGomchwiPreference) return;
+  
+  const data = gomchwiQuizData[currentGomchwiPreference];
+  if (!data) return;
+
+  const titleEl = document.getElementById('quiz-result-title');
+  const descEl = document.getElementById('quiz-result-desc');
+  const pairingEl = document.getElementById('quiz-result-pairing');
+
+  if (titleEl) titleEl.innerText = data.title[currentLang];
+  if (descEl) descEl.innerText = data.desc[currentLang];
+  if (pairingEl) pairingEl.innerText = data.pairing[currentLang];
 }
