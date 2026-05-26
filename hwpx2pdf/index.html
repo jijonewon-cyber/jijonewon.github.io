@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HWPX & DOCX Local Utility Suite (안전한 무설치 문서 도구)</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- CSS Sheet -->
+    <link rel="stylesheet" href="style.css">
+    <!-- JSZip Library for client-side ZIP parsing (Local Offline Copy) -->
+    <script src="jszip.min.js"></script>
+    <!-- Mammoth.js for client-side DOCX-to-HTML rendering (Local Offline Copy) -->
+    <script src="mammoth.browser.min.js"></script>
+    <!-- PDF-Lib for client-side PDF merging/splitting (Local Offline Copy) -->
+    <script src="pdf-lib.min.js"></script>
+    <!-- html2pdf.js for client-side HTML-to-PDF rendering (Local Offline Copy) -->
+    <script src="html2pdf.bundle.min.js"></script>
+</head>
+<body>
+    <div class="glass-bg"></div>
+    <div class="glow-orb glow-1"></div>
+    <div class="glow-orb glow-2"></div>
+
+    <main class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo">
+                <span class="icon-doc-convert">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2Z" fill="url(#logo-grad-1)"/>
+                        <path d="M14 2V8H20L14 2Z" fill="url(#logo-grad-2)"/>
+                        <path d="M8 12L11 15L8 18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M16 18L13 15L16 12" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <defs>
+                            <linearGradient id="logo-grad-1" x1="4" y1="2" x2="20" y2="22" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#00F2FE"/>
+                                <stop offset="1" stop-color="#4FACFE"/>
+                            </linearGradient>
+                            <linearGradient id="logo-grad-2" x1="14" y1="2" x2="20" y2="8" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#4FACFE"/>
+                                <stop offset="1" stop-color="#000000" stop-opacity="0.2"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </span>
+                <h1>Document <span>➔</span> PDF Utility Suite</h1>
+            </div>
+            <div class="security-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                <span>100% 로컬 브라우저 연산 (안전한 개인정보 보장)</span>
+            </div>
+        </header>
+
+        <!-- Tab Navigation -->
+        <nav class="tab-nav">
+            <button class="tab-btn active" data-tab="converter">📄 HWPX / DOCX 변환기</button>
+            <button class="tab-btn" data-tab="pdf-tools">🔗 PDF 병합 & 분할</button>
+            <button class="tab-btn" data-tab="image-to-pdf">🖼️ 이미지 ➔ PDF</button>
+        </nav>
+
+        <!-- Tab 1: Document Converter -->
+        <section class="tab-content" id="tab-converter">
+            <!-- Dropzone Container -->
+            <div class="dropzone-section">
+                <div class="dropzone" id="file-dropzone">
+                    <input type="file" id="file-input" accept=".hwpx,.docx" multiple style="display: none;">
+                    <div class="dropzone-content">
+                        <div class="cloud-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="17 8 12 3 7 8"></polyline>
+                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                            </svg>
+                        </div>
+                        <h3>HWPX / DOCX 파일 선택</h3>
+                        <p class="dropzone-sub">마우스로 파일(들)을 끌어다 놓거나 클릭하여 선택하세요. (다중 선택 가능)</p>
+                        <span class="file-limits">지원 파일: HWPX (.hwpx), Word (.docx)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dynamic File Queue List (for batch processing) -->
+            <div id="converter-queue-container" class="status-card" style="display: none; margin-top: 1.5rem;">
+                <h4 style="margin-bottom: 1rem; font-weight: 600;">변환 대기열 (<span id="queue-count">0</span>)</h4>
+                <div id="converter-queue-list" class="queue-list" style="display: flex; flex-direction: column; gap: 0.8rem; margin-bottom: 1.5rem;"></div>
+                <div class="queue-actions" style="display: flex; gap: 0.8rem; justify-content: flex-end;">
+                    <button class="btn btn-secondary" id="btn-clear-queue">대기열 비우기</button>
+                    <button class="btn btn-primary" id="btn-process-queue">일괄 변환 시작</button>
+                </div>
+            </div>
+
+            <!-- Status Panel (Stepper for active conversion) -->
+            <div class="status-section" id="status-panel" style="display: none; margin-top: 1.5rem;">
+                <div class="status-card">
+                    <div class="file-info-header">
+                        <span class="file-name-display" id="status-filename">document.hwpx</span>
+                        <span class="file-size-display" id="status-filesize">0 KB</span>
+                    </div>
+                    <div class="stepper">
+                        <div class="step" id="step-1">
+                            <span class="step-dot"></span>
+                            <span class="step-label">파일 읽기</span>
+                        </div>
+                        <div class="step" id="step-2">
+                            <span class="step-dot"></span>
+                            <span class="step-label">구조 분석</span>
+                        </div>
+                        <div class="step" id="step-3">
+                            <span class="step-dot"></span>
+                            <span class="step-label">텍스트 추출</span>
+                        </div>
+                        <div class="step" id="step-4">
+                            <span class="step-dot"></span>
+                            <span class="step-label">미리보기</span>
+                        </div>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="status-progressbar" style="width: 0%;"></div>
+                    </div>
+                    <p class="status-msg" id="status-message">파일을 변환할 준비를 마쳤습니다.</p>
+                </div>
+            </div>
+
+            <!-- Workspace Container -->
+            <div class="workspace-section" id="workspace-panel" style="display: none; margin-top: 1.5rem;">
+                <div class="toolbar">
+                    <div class="toolbar-group">
+                        <button class="btn btn-secondary" id="btn-zoom-out" title="축소">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        </button>
+                        <span class="zoom-value" id="zoom-indicator">100%</span>
+                        <button class="btn btn-secondary" id="btn-zoom-in" title="확대">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        </button>
+                    </div>
+
+                    <div class="toolbar-group">
+                        <label class="toggle-container">
+                            <span class="toggle-label">페이지 레이아웃</span>
+                            <select id="layout-select" class="select-input">
+                                <option value="portrait">세로 (Portrait)</option>
+                                <option value="landscape">가로 (Landscape)</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="toolbar-group">
+                        <button class="btn btn-secondary" id="btn-toggle-edit" title="실시간 편집 모드 토글">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 20h9"></path>
+                                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                            </svg>
+                            <span>실시간 편집</span>
+                        </button>
+                        <button class="btn btn-secondary" id="btn-download-zip" style="display: none;" title="일괄 변환 ZIP 다운로드">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                            <span>ZIP 다운로드</span>
+                        </button>
+                        <button class="btn btn-primary" id="btn-download-pdf">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                            <span>PDF 다운로드</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Floating Rich Text Editor Toolbar -->
+                <div id="editor-toolbar" class="editor-toolbar" style="display: none;">
+                    <button class="editor-btn" data-command="bold" title="굵게"><b>B</b></button>
+                    <button class="editor-btn" data-command="italic" title="기울임"><i>I</i></button>
+                    <button class="editor-btn" data-command="underline" title="밑줄"><u>U</u></button>
+                    <button class="editor-btn" data-command="strikeThrough" title="취소선"><strike>S</strike></button>
+                    <select class="editor-select" id="editor-font-size" title="글자 크기">
+                        <option value="1">매우 작게</option>
+                        <option value="2">작게</option>
+                        <option value="3" selected>보통</option>
+                        <option value="4">크게</option>
+                        <option value="5">매우 크게</option>
+                        <option value="6">최대</option>
+                    </select>
+                    <input type="color" class="editor-color" id="editor-color-picker" title="글자 색상" value="#111111">
+                </div>
+
+                <div class="preview-area-wrapper">
+                    <div class="preview-container">
+                        <div id="preview-document" class="preview-document portrait">
+                            <!-- Content gets dynamically added by script.js -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab 2: PDF Merge & Split -->
+        <section class="tab-content" id="tab-pdf-tools" style="display: none;">
+            <div class="dropzone-section">
+                <div class="dropzone" id="pdf-dropzone">
+                    <input type="file" id="pdf-file-input" accept=".pdf" multiple style="display: none;">
+                    <div class="dropzone-content">
+                        <div class="cloud-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
+                                <path d="M12 8v8"></path>
+                                <path d="M8 12h8"></path>
+                            </svg>
+                        </div>
+                        <h3>PDF 파일 병합 / 페이지 분할</h3>
+                        <p class="dropzone-sub">여러 PDF 파일을 드래그하여 병합하거나 하나의 PDF에서 페이지를 추출하세요.</p>
+                        <span class="file-limits">지원 파일: PDF (.pdf)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PDF Workspace -->
+            <div id="pdf-workspace" class="status-card" style="display: none; margin-top: 1.5rem;">
+                <div class="pdf-tool-modes" style="display: flex; gap: 1rem; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 1rem; margin-bottom: 1.5rem;">
+                    <button class="btn btn-secondary active" id="btn-mode-merge">PDF 병합 (Merge)</button>
+                    <button class="btn btn-secondary" id="btn-mode-split">PDF 분할 (Split / Extract)</button>
+                </div>
+
+                <div id="pdf-merge-container" class="pdf-action-block">
+                    <h4 style="font-weight: 600; margin-bottom: 1rem;">병합할 PDF 파일 목록 (순서 조절 가능)</h4>
+                    <div id="pdf-merge-list" class="pdf-file-list" style="display: flex; flex-direction: column; gap: 0.8rem; margin: 1rem 0;"></div>
+                    <button class="btn btn-primary" id="btn-run-merge" style="width: 100%;">PDF 병합하여 다운로드</button>
+                </div>
+
+                <div id="pdf-split-container" class="pdf-action-block" style="display: none;">
+                    <h4 style="font-weight: 600; margin-bottom: 1rem;">선택된 PDF 파일 분할</h4>
+                    <div class="split-info-card" style="background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 1.5rem;">
+                        <p id="pdf-split-filename" style="font-weight: 500; color: var(--text-primary);"></p>
+                        <p id="pdf-split-pagecount" style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.3rem;"></p>
+                    </div>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label class="toggle-label" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">추출할 페이지 범위 입력</label>
+                        <input type="text" id="pdf-split-range" class="select-input" style="width: 100%; padding: 0.6rem; text-align: left;" placeholder="예: 1-3, 5 (공백 없이 입력)">
+                        <span style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.3rem; display: block;">쉼표와 하이픈으로 지정하세요. (예: 1,3,5 또는 2-6)</span>
+                    </div>
+                    <button class="btn btn-primary" id="btn-run-split" style="width: 100%;">지정된 페이지 분할 다운로드</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab 3: Image to PDF -->
+        <section class="tab-content" id="tab-image-to-pdf" style="display: none;">
+            <div class="dropzone-section">
+                <div class="dropzone" id="image-dropzone">
+                    <input type="file" id="image-file-input" accept="image/png, image/jpeg, image/jpg" multiple style="display: none;">
+                    <div class="dropzone-content">
+                        <div class="cloud-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                <polyline points="21 15 16 10 5 21"></polyline>
+                            </svg>
+                        </div>
+                        <h3>이미지 ➔ PDF 변환</h3>
+                        <p class="dropzone-sub">이미지(PNG, JPG) 파일들을 드래그하여 PDF 페이지로 변환하세요. (다중 선택 가능)</p>
+                        <span class="file-limits">지원 파일: PNG, JPG, JPEG</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Image to PDF Workspace -->
+            <div id="image-workspace" class="status-card" style="display: none; margin-top: 1.5rem;">
+                <div class="image-to-pdf-settings" style="display: flex; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.08);">
+                    <label class="toggle-container">
+                        <span class="toggle-label" style="font-weight: 500;">용지 방향</span>
+                        <select id="image-pdf-orientation" class="select-input">
+                            <option value="portrait">세로 (Portrait)</option>
+                            <option value="landscape">가로 (Landscape)</option>
+                        </select>
+                    </label>
+                    <label class="toggle-container">
+                        <span class="toggle-label" style="font-weight: 500;">여백 설정</span>
+                        <select id="image-pdf-margin" class="select-input">
+                            <option value="none">여백 없음 (0mm)</option>
+                            <option value="narrow">좁은 여백 (5mm)</option>
+                            <option value="normal" selected>보통 여백 (10mm)</option>
+                        </select>
+                    </label>
+                </div>
+
+                <h4 style="font-weight: 600; margin-bottom: 1rem;">변환할 이미지 순서 정렬 (순서 변경 가능)</h4>
+                <div id="image-preview-grid" class="image-preview-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;"></div>
+                <button class="btn btn-primary" id="btn-run-image-pdf" style="width: 100%;">PDF 파일로 일괄 변환 다운로드</button>
+            </div>
+        </section>
+
+        <!-- Security & Share Widgets -->
+        <section class="security-share-section" style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem;">
+            <div class="security-card" style="background: rgba(63, 185, 80, 0.04); border: 1px solid rgba(63, 185, 80, 0.15); border-radius: 12px; padding: 1.2rem; backdrop-filter: blur(12px);">
+                <div class="security-card-header" style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.5rem;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                    <h4 style="font-size: 0.95rem; font-weight: 600; color: var(--success);">100% 로컬 연산 데이터 무결성 보장</h4>
+                </div>
+                <p style="font-size: 0.8rem; line-height: 1.5; color: var(--text-secondary);">본 도구는 모든 변환과 정렬 작업을 사용자 로컬 컴퓨터 내에서 직접 수행합니다. 업로드되는 파일은 외부 클라우드나 웹 서버로 전송되지 않아, 공공기관 보고서, 기업 기밀, 서류 계약서도 안전하게 변환하실 수 있습니다.</p>
+            </div>
+
+            <div class="share-box" style="display: flex; justify-content: space-between; align-items: center; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 1rem; flex-wrap: wrap; gap: 0.8rem;">
+                <span class="share-title" style="font-size: 0.85rem; font-weight: 500; color: var(--text-secondary);">유용한 오프라인 도구 공유하기:</span>
+                <div class="share-buttons" style="display: flex; gap: 0.6rem;">
+                    <button class="btn btn-secondary share-btn" id="btn-share-kakao" style="font-size: 0.8rem; padding: 0.4rem 0.8rem; background: #fee500; color: #191919; border: none; font-weight: 600;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle; margin-right: 4px;">
+                            <path d="M12 3c-4.97 0-9 3.185-9 7.115 0 2.557 1.707 4.8 4.27 6.054-.188.702-.68 2.531-.777 2.94-.123.518.197.511.414.368.17-.113 2.71-1.84 3.79-2.576.43.06.87.094 1.303.094 4.97 0 9-3.185 9-7.115S16.97 3 12 3z"/>
+                        </svg>
+                        <span>카카오톡</span>
+                    </button>
+                    <button class="btn btn-secondary share-btn" id="btn-share-link" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 4px;">
+                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                        </svg>
+                        <span>링크 복사</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Privacy & Footer -->
+        <footer class="app-footer">
+            <p>이 웹 애플리케이션은 HWPX 문서 규격(OWPML), Word(DOCX) 규격 및 PDF 규격을 기반으로 동작합니다. 일부 특수 서식이나 정교한 레이아웃(표 중첩, 특정 수식, 특수 드로잉 오브젝트 등)은 다소 다르게 표현될 수 있습니다.</p>
+            <p class="copyright">© 2026 HWPX & DOCX to PDF Client-Side Converter. Serverless & Privacy-Focused.</p>
+        </footer>
+    </main>
+
+    <!-- JS Logic -->
+    <script src="script.js"></script>
+</body>
+</html>
