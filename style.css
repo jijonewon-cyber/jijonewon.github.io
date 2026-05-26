@@ -2835,3 +2835,38 @@ footer {
   }
 }
 
+/* 12. Notice / Educational Modal */
+.notice-modal-content {
+  max-width: 450px;
+  text-align: center;
+  padding: 40px 30px;
+}
+
+.notice-icon {
+  font-size: 50px;
+  color: var(--color-primary);
+  margin-bottom: 20px;
+  animation: float 3s ease-in-out infinite;
+}
+
+.notice-modal-content h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-dark);
+  margin-bottom: 15px;
+}
+
+.notice-modal-content p {
+  font-size: 16px;
+  color: var(--color-gray-dark);
+  margin-bottom: 30px;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+

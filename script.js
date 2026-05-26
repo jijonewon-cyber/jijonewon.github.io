@@ -254,7 +254,12 @@ const translations = {
     label_c_email: "답변받을 이메일 주소",
     label_c_subject: "문의 제목",
     label_c_message: "문의 내용",
-    btn_send_email: "문의 메일 보내기"
+    btn_send_email: "문의 메일 보내기",
+
+    // Welcome Notice
+    notice_title: "안내 말씀",
+    notice_body: "이 사이트는 교육용으로 제작된 페이지입니다.",
+    btn_close: "확인"
   },
   en: {
     // Header
@@ -506,7 +511,12 @@ const translations = {
     label_c_email: "Your Email Address",
     label_c_subject: "Subject",
     label_c_message: "Message",
-    btn_send_email: "Send Inquiry Email"
+    btn_send_email: "Send Inquiry Email",
+
+    // Welcome Notice
+    notice_title: "Information Notice",
+    notice_body: "This website was created for educational purposes.",
+    btn_close: "Confirm"
   }
 };
 
@@ -725,6 +735,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize dynamic translation language
   const savedLang = localStorage.getItem('ygtour_lang') || 'ko';
   setLanguage(savedLang);
+
+  // Set overflow hidden for notice modal to lock scroll on load
+  const noticeModal = document.getElementById('notice-modal');
+  if (noticeModal && noticeModal.classList.contains('active')) {
+    document.body.style.overflow = 'hidden';
+  }
 
   // Initialize booking date constraints (today as minimum)
   const dateInput = document.getElementById('booking-date');
@@ -1394,4 +1410,12 @@ function sendContactEmail(event) {
        if (btnText) btnText.classList.remove('hidden');
        if (btnSpinner) btnSpinner.classList.add('hidden');
     });
+}
+
+function closeNoticeModal() {
+  const modal = document.getElementById('notice-modal');
+  if (modal) {
+    modal.classList.remove('active');
+    document.body.style.overflow = 'auto'; // Restore scroll
+  }
 }
