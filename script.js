@@ -212,7 +212,38 @@ const translations = {
     quiz_opt_healthy: "청정 건강식 스타일",
     quiz_opt_sweet: "디저트/분식 스타일",
     quiz_result_badge: "추천 메뉴 (RECOMMENDED MENU)",
-    quiz_pairing_label: "추천 곁들임:"
+    quiz_pairing_label: "추천 곁들임:",
+
+    // Public Transit (Bus schedule)
+    nav_bus: "버스시간표",
+    badge_bus: "교통 정보",
+    bus_title: "대중교통 버스 운행 시간표",
+    bus_desc: "서울, 춘천 등 주요 도시에서 양구군까지 오는 시외버스와 양구 관내 주요 관광지로 가는 농어촌 버스 시간표입니다.",
+    bus_tab_intercity: "도시 간 시외버스",
+    bus_tab_local: "관광지 농어촌버스",
+    bus_btn_seoul: "동서울 ↔ 양구",
+    bus_btn_chuncheon: "춘천 ↔ 양구",
+    bus_dir_seoul_to: "동서울 → 양구 (상행)",
+    bus_dir_to_seoul: "양구 → 동서울 (하행)",
+    bus_fare_adult: "성인 요금: 17,000원",
+    bus_duration_seoul: "소요 시간: 약 2시간 (무정차)",
+    th_no: "순번",
+    th_dept: "출발 시간",
+    th_type: "구분",
+    td_direct: "무정차 직행",
+    td_last: "막차 (직행)",
+    bus_dir_chun_to: "춘천 → 양구 (상행)",
+    bus_dir_to_chun: "양구 → 춘천 (하행)",
+    bus_fare_chun: "성인 요금: 7,400원",
+    bus_duration_chun: "소요 시간: 약 1시간",
+    td_local_inter: "직행 완행",
+    bus_route_dutayeon: "양구 터미널 ↔ 동면 (두타연 방면)",
+    bus_fare_local: "기본 요금: 1,400원 (교통카드 가능)",
+    bus_note_dutayeon: "※ 동면 종점 하차 후 두타연 입구까지 도보 이동 필요",
+    th_dept_terminal: "터미널 출발",
+    th_dept_back: "종점 회차",
+    bus_route_haean: "양구 터미널 ↔ 해안면 (펀치볼 방면)",
+    bus_note_haean: "※ 통일관, 을지전망대 매표소 인근 하차"
   },
   en: {
     // Header
@@ -422,7 +453,38 @@ const translations = {
     quiz_opt_healthy: "Pure Healthy Eater",
     quiz_opt_sweet: "Dessert & Snack Lover",
     quiz_result_badge: "RECOMMENDED MENU",
-    quiz_pairing_label: "Best Pairing:"
+    quiz_pairing_label: "Best Pairing:",
+
+    // Public Transit (Bus schedule)
+    nav_bus: "Bus Timetable",
+    badge_bus: "Transit Info",
+    bus_title: "Public Bus Timetable",
+    bus_desc: "Timetable for intercity buses from major cities to Yanggu, and local rural buses connecting to major attractions.",
+    bus_tab_intercity: "Intercity Bus",
+    bus_tab_local: "Local Attraction Bus",
+    bus_btn_seoul: "East Seoul ↔ Yanggu",
+    bus_btn_chuncheon: "Chuncheon ↔ Yanggu",
+    bus_dir_seoul_to: "East Seoul → Yanggu",
+    bus_dir_to_seoul: "Yanggu → East Seoul",
+    bus_fare_adult: "Adult Fare: 17,000 KRW",
+    bus_duration_seoul: "Travel Time: ~2 hours (Express)",
+    th_no: "No.",
+    th_dept: "Departure",
+    th_type: "Type",
+    td_direct: "Express Direct",
+    td_last: "Last Bus (Express)",
+    bus_dir_chun_to: "Chuncheon → Yanggu",
+    bus_dir_to_chun: "Yanggu → Chuncheon",
+    bus_fare_chun: "Adult Fare: 7,400 KRW",
+    bus_duration_chun: "Travel Time: ~1 hour",
+    td_local_inter: "Local Intercity",
+    bus_route_dutayeon: "Yanggu Terminal ↔ Dong-myeon (for Dutayeon)",
+    bus_fare_local: "Base Fare: 1,400 KRW (T-Money accepted)",
+    bus_note_dutayeon: "※ Drop off at Dong-myeon terminal, then walk to Dutayeon entrance.",
+    th_dept_terminal: "From Terminal",
+    th_dept_back: "Return Depart",
+    bus_route_haean: "Yanggu Terminal ↔ Haean-myeon (for Punchbowl)",
+    bus_note_haean: "※ Drops off near Unification Hall & Eulji Observatory box office."
   }
 };
 
@@ -1209,4 +1271,45 @@ function updateGomchwiQuizResultDisplay() {
   if (titleEl) titleEl.innerText = data.title[currentLang];
   if (descEl) descEl.innerText = data.desc[currentLang];
   if (pairingEl) pairingEl.innerText = data.pairing[currentLang];
+}
+
+// ==========================================================================
+// Bus Timetable Interactive Section (Tabs & Route Filter)
+// ==========================================================================
+
+function switchBusTab(tabName) {
+  // Toggle tab button active styles
+  document.querySelectorAll('.bus-tab-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  const activeBtn = document.getElementById(`bus-tab-${tabName}`);
+  if (activeBtn) activeBtn.classList.add('active');
+
+  // Toggle tab contents
+  document.querySelectorAll('#bus-schedule .bus-tab-content').forEach(pane => {
+    pane.classList.add('hidden');
+  });
+  const activePane = document.getElementById(`bus-content-${tabName}`);
+  if (activePane) activePane.classList.remove('hidden');
+}
+
+function filterIntercity(city) {
+  // Toggle filter buttons active styles
+  document.querySelectorAll('.bus-filter-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  const activeBtn = document.getElementById(`btn-bus-${city}`);
+  if (activeBtn) activeBtn.classList.add('active');
+
+  // Toggle grids
+  const seoulGrid = document.getElementById('bus-seoul-grid');
+  const chuncheonGrid = document.getElementById('bus-chuncheon-grid');
+  
+  if (city === 'seoul') {
+    if (seoulGrid) seoulGrid.classList.remove('hidden');
+    if (chuncheonGrid) chuncheonGrid.classList.add('hidden');
+  } else {
+    if (seoulGrid) seoulGrid.classList.add('hidden');
+    if (chuncheonGrid) chuncheonGrid.classList.remove('hidden');
+  }
 }
